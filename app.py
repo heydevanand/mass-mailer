@@ -5,6 +5,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 import getpass
+import os
 
 app = Flask(__name__)
 
@@ -75,10 +76,27 @@ def index():
         smtp_username = request.form['email']
         smtp_password = request.form['password']
 
-        df = pd.read_excel('list.xlsx', sheet_name="Sheet1")
+        # Check if a file is uploaded
+        if 'file' not in request.files:
+            return render_template('index.html', error="No file uploaded")
+
+        file = request.files['file']
+
+        # Check if the file is empty
+        if file.filename == '':
+            return render_template('index.html', error="No file selected")
+
+        # Save the uploaded file
+        file.save('user_uploaded_file.xlsx')
+
+        # Read the user-uploaded Excel file
+        df = pd.read_excel('user_uploaded_file.xlsx', sheet_name="Sheet1")
 
         # Call the function to send emails
         send_emails(smtp_server, smtp_port, smtp_username, smtp_password, df)
+
+        # Delete the user-uploaded file
+        os.remove('user_uploaded_file.xlsx')
 
     return render_template('index.html')
 
