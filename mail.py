@@ -3,6 +3,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
+import getpass
 
 # Read student data from the Excel sheet
 df = pd.read_excel('list.xlsx', sheet_name="Sheet1")
@@ -11,7 +12,7 @@ df = pd.read_excel('list.xlsx', sheet_name="Sheet1")
 smtp_server = 'smtp.gmail.com'
 smtp_port = 587  # Use 465 for SSL
 smtp_username = input("Enter your email: ")
-smtp_password = input("Enter your password: ")
+smtp_password = getpass.getpass("Enter your password: ")
 from_email = smtp_username
 sender_name = 'Dy Registrar, Dr. Bhimrao Ambedkar University, Agra'
 
