@@ -1,12 +1,9 @@
-from flask import Flask, render_template, request
 import pandas as pd
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 import getpass
-
-app = Flask(__name__)
 
 # Function to send emails
 def send_emails(smtp_server, smtp_port, smtp_username, smtp_password, df):
@@ -66,21 +63,13 @@ def send_emails(smtp_server, smtp_port, smtp_username, smtp_password, df):
     server.quit()
     print("All emails sent successfully!")
 
-# Route for the main page
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
-        smtp_server = 'smtp.gmail.com'
-        smtp_port = 587  # Use 465 for SSL
-        smtp_username = request.form['email']
-        smtp_password = request.form['password']
-
-        df = pd.read_excel('list.xlsx', sheet_name="Sheet1")
-
-        # Call the function to send emails
-        send_emails(smtp_server, smtp_port, smtp_username, smtp_password, df)
-
-    return render_template('index.html')
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    smtp_server = 'smtp.gmail.com'
+    smtp_port = 587  # Use 465 for SSL
+    smtp_username = input("Enter your email: ")
+    smtp_password = getpass.getpass("Enter your password: ")
+
+    df = pd.read_excel('list.xlsx', sheet_name="Sheet1")
+
+    # Call the function to send emails
+    send_emails(smtp_server, smtp_port, smtp_username, smtp_password, df)
